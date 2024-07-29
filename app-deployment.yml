@@ -13,7 +13,7 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    path: /var/nfs/general/cache
+    path: /var/nfs/general/wp-content
     server: 10.0.0.4
 ---
 apiVersion: v1
