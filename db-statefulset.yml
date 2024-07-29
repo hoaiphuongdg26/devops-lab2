@@ -98,7 +98,7 @@ spec:
               memory: 1Gi
           livenessProbe:
             exec:
-              command: ["mysqladmin", "ping"]
+              command: ["mysqladmin", "ping", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 5
@@ -142,7 +142,7 @@ spec:
                 until mysql -h 127.0.0.1 -e "SELECT 1"; do sleep 1; done
 
                 echo "Initializing replication from clone position"
-                mysql -h 127.0.0.1 \
+                mysql -h 127.0.0.1 -u root -p${MYSQL_ROOT_PASSWORD} \
                       -e "$(<change_master_to.sql.in), \
                               MASTER_HOST='mysql-0.mysql', \
                               MASTER_USER='root', \
