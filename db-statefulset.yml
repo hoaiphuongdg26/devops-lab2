@@ -40,6 +40,8 @@ spec:
               mountPath: /mnt/conf.d
             - name: config-map
               mountPath: /mnt/config-map
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
         - name: clone-mysql
           image: gcr.io/google-samples/xtrabackup:1.0
           command:
@@ -170,6 +172,9 @@ spec:
         - name: config-map
           configMap:
             name: mysql
+        - name: init-scripts
+          configMap:
+            name: init-scripts
   volumeClaimTemplates:
     - metadata:
         name: data
