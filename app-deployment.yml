@@ -73,7 +73,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mysql-secret
-                  key: DB_ROOT_PASS
+                  key: MYSQL_ROOT_PASSWORD
             - name: WORDPRESS_DB_USER
               value: wordpress
           ports:
