@@ -35,8 +35,13 @@ spec:
               else
                 cp /mnt/config-map/replica.cnf /mnt/conf.d/
               fi
+              # Wait for MySQL to be ready
+              until mysqladmin -h localhost -u root -p$MYSQL_ROOT_PASSWORD ping --silent; do
+                echo 'waiting for mysql'
+                sleep 10
+              done
               # Create user and grant privileges
-              until mysql -h localhost -u root -p$MYSQL_ROOT_PASSWORD -e 'CREATE USER "wordpress"@"%" IDENTIFIED BY "123456@Za"; GRANT ALL PRIVILEGES ON wordpress.* TO "wordpress"@"%"; FLUSH PRIVILEGES;'; do echo 'waiting for mysql'; sleep 10; done
+              mysql -h localhost -u root -p$MYSQL_ROOT_PASSWORD -e 'CREATE USER "wordpress"@"%" IDENTIFIED BY "123456@Za"; GRANT ALL PRIVILEGES ON wordpress.* TO "wordpress"@"%"; FLUSH PRIVILEGES;'
           volumeMounts:
             - name: conf
               mountPath: /mnt/conf.d
