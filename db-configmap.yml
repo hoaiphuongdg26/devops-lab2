@@ -10,10 +10,14 @@ data:
     # Apply this config only on the primary.
     [mysqld]
     log-bin
+    skip_name_resolve
+    bind-address=0.0.0.0
   replica.cnf: |
     # Apply this config only on replicas.
     [mysqld]
     super-read-only
+    skip_name_resolve
+    bind-address=0.0.0.0
 ---
 apiVersion: v1
 kind: ConfigMap
