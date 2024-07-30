@@ -117,6 +117,12 @@ spec:
             timeoutSeconds: 1
         - name: xtrabackup
           image: gcr.io/google-samples/xtrabackup:1.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
           ports:
             - name: xtrabackup
               containerPort: 3307
@@ -145,7 +151,7 @@ spec:
               # Check if we need to complete a clone by starting replication.
               if [[ -f change_master_to.sql.in ]]; then
                 echo "Waiting for mysqld to be ready (accepting connections)"
-                until mysql -h 127.0.0.1 -e "SELECT 1"; do sleep 1; done
+                until mysql -h 127.0.0.1 -p$MYSQL_ROOT_PASSWORD -e "SELECT 1"; do sleep 1; done
 
                 echo "Initializing replication from clone position"
                 mysql -h 127.0.0.1 -u root -p${MYSQL_ROOT_PASSWORD} \
@@ -154,14 +160,14 @@ spec:
                               MASTER_USER='root', \
                               MASTER_PASSWORD='${MYSQL_ROOT_PASSWORD}', \
                               MASTER_CONNECT_RETRY=10; \
-                            START SLAVE;" || exit 1
+                            START SLAVE USER='root' PASSWORD='$MYSQL_ROOT_PASSWORD';" || exit 1
                 # In case of container restart, attempt this at-most-once.
                 mv change_master_to.sql.in change_master_to.sql.orig
               fi
 
               # Start a server to send backups when requested by peers.
               exec ncat --listen --keep-open --send-only --max-conns=1 3307 -c \
-                "xtrabackup --backup --slave-info --stream=xbstream --host=127.0.0.1 --user=root"
+                "xtrabackup --backup --slave-info --stream=xbstream --host=127.0.0.1 --user=root --password=$MYSQL_ROOT_PASSWORD"
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql
