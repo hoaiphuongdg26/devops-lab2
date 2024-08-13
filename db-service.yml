@@ -7,10 +7,12 @@ metadata:
     app: mysql
     app.kubernetes.io/name: mysql
 spec:
+  type: NodePort
   ports:
     - name: mysql
       port: 3306
-  clusterIP: None
+      nodePort: 30002
+  #clusterIP: None
   selector:
     app: mysql
 ---
