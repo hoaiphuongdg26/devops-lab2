@@ -1,6 +1,0 @@
-resources:
-  - db-configmap.yml
-  - db-service.yml
-  - db-statefulset.yml
-  - app-secret.yml
-  - app-deployment.yml

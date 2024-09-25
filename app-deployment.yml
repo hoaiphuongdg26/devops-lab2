@@ -40,11 +40,11 @@ spec:
   ports:
     - port: 80
       targetPort: 80
-      nodePort: 31000
+      protocol: TCP
+  type: ClusterIP
   selector:
     app: wordpress
     tier: frontend
-  type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -78,6 +78,10 @@ spec:
                   key: MYSQL_ROOT_PASSWORD
             - name: WORDPRESS_DB_USER
               value: wordpress
+            - name: WP_HOME
+              value: http://master.eastasia.cloudapp.azure.com:32343
+            - name: WP_SITEURL
+              value: http://master.eastasia.cloudapp.azure.com:32343
           ports:
             - containerPort: 80
               name: wordpress
