@@ -10,13 +10,11 @@ data:
     # Apply this config only on the primary.
     [mysqld]
     log-bin
-    skip-name-resolve
     bind-address=0.0.0.0
   replica.cnf: |
     # Apply this config only on replicas.
     [mysqld]
     super-read-only
-    skip-name-resolve
     log-bin=mysql-bin
     replicate-ignore-db=mysql
     bind-address=0.0.0.0
